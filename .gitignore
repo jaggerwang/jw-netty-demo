@@ -1,0 +1,9 @@
+# Hidden
+.*
+.*/
+
+# Build
+build
+out
+
+# IDE
