@@ -1,0 +1,16 @@
+version: "2"
+services:
+  app:
+    image: jw-netty-demo:latest
+    environment:
+      PATH_APP: /app
+      PATH_DATA: /data
+      MONGODB_URI: mongodb:27017
+    ports:
+    - 19900:8080
+    volumes:
+    - ~/data/jw-netty-demo/app:/data
+  mongodb:
+    image: mongo:3
+    volumes:
+    - ~/data/jw-netty-demo/mongodb:/data/db
