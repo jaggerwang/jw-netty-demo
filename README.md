@@ -173,3 +173,9 @@ services:
     - ~/data/jw-netty-demo/mongodb:/data/db
 
 ```
+
+## References
+
+1. [Netty 高性能网络协议服务器开发](https://blog.jaggerwang.net/netty-high-performance-protocol-server-develop/)
+
+
