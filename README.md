@@ -8,16 +8,60 @@ The server is developed using the [Netty](https://netty.io/) famework, so the pe
 
 The binary protocol used to transfer one message is as follows.
 
-| start(2 bytes) | total length(2 bytes) | version(1 byte) | device no(4 bytes) | time(4 bytes) | data item length(1 byte) | data item value(data item length byte or bytes) | more data ... | checksum(2 bytes) |
+| start(2 bytes) | total length(2 bytes) | version(1 byte) | device no(4 bytes) | time(4 bytes) | data item length(1 byte) | data item value | more data ... | checksum(2 bytes) |
 
 * all segments are unsigned numbers and in network byte order
 * start bytes fixed to `0x55 0xaa`
 * total length is the number of bytes included in message
 * time segment are unix timestamp
-* date item value's length is determined by it's previous segment's value
+* byte length of date item value is controlled by it's previous segment's value
 * date item and valus pair can repeat many times, as if the total length not exceed 65535
 
 ## Develop
+
+### Building tool
+
+This project use [Gradle](https://gradle.org/) as the building tool. There is no need to install Gradle at first. When first execute `./gradlew <task>` command in the root directory of project, it will auto download and install gradle for this project.
+
+The `build.gradle` file for this project is as follows. It uses `application` gradle plugin to build the project.
+
+```groovy
+apply plugin : 'application'
+
+mainClassName = 'net.jaggerwang.jwnettydemo.Main'
+
+dependencies {
+    compile 'io.netty:netty-all:4.1.21.Final'
+    compile 'org.apache.logging.log4j:log4j-api:2.10.0'
+    compile 'org.apache.logging.log4j:log4j-core:2.10.0'
+    compile 'org.mongodb:mongodb-driver:3.6.3'
+    compile 'com.aliyun:hitsdb-client:0.0.5'
+    compile 'org.apache.kafka:kafka-clients:0.10.0.0'
+    compile 'org.apache.kafka:connect-json:0.10.0.0'
+    compile 'com.aliyun.openservices:ons-sasl-client:0.1'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.9.4'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.9.4'
+    compile 'com.fasterxml.jackson.module:jackson-module-parameter-names:2.9.4'
+    compile 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.9.4'
+    compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.4'
+    compile 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0'
+    compile 'commons-codec:commons-codec:1.10'
+
+    compileOnly 'org.projectlombok:lombok:1.16.18'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.1.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.1.0'
+}
+
+repositories {
+    mavenCentral()
+}
+
+test {
+    useJUnitPlatform()
+}
+
+```
 
 ### Run
 
@@ -35,6 +79,8 @@ $ ./gradlew run
   > :run
 ```
 
+After run, you can post binary message to address `localhost:8080` now.
+
 ### Test
 
 ```bash
@@ -47,6 +93,8 @@ $ ./gradlew test
   BUILD SUCCESSFUL in 7s
   4 actionable tasks: 4 up-to-date
 ```
+
+This project use JUnit 5 for unit test. There have two unit tests, one is for message decoder, and the other is for message saver.
 
 ### Package
 
@@ -66,6 +114,8 @@ $ ./build/install/jw-netty-demo/bin/jw-netty-demo
   SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
   2018-四月-26 22:23:22 INFO  net.jaggerwang.jwnettydemo.Main - server started on port 8080
 ```
+
+The app build is installed in path `./build/install/jw-netty-demo`, and there is a script `bin/jw-netty-demo` to run it.
 
 ## Deploy
 
